@@ -37,7 +37,11 @@ Scripts to perform the analyses in figures 2 and 4 (and some supplementary data)
 * [edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) - Differential expression of sequencing data
 * [topGO](https://bioconductor.org/packages/release/bioc/html/topGO.html) - Functional enrichment of Gene Ontology terms
 * [ReactomePA](http://bioconductor.org/packages/release/bioc/html/ReactomePA.html) - Functional enrichment of Reactome terms
-* [XLConnect](https://cran.r-project.org/web/packages/XLConnect/index.html) - Writing Excel spreadsheets for convenient output of functional enrichment results
+* [XLConnect](https://cran.r-project.org/web/packages/XLConnect/index.html) - Writing Excel spreadsheets for convenient output of
+functional enrichment results
+* [readxl](https://cran.r-project.org/web/packages/readxl/index.html) - Efficient reading of Excel spreadsheets (but not writing)
+* [org.Mm.eg.db](http://bioconductor.org/packages/release/data/annotation/html/org.Mm.eg.db.html) - Mouse gene annotation data
+* [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) - Annotation tools
 * [VennDiagram](https://cran.r-project.org/web/packages/VennDiagram/index.html) - Venn diagrammes
 
 ## Contributing
