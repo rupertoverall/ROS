@@ -29,6 +29,10 @@ There are two .RData files each containing a list with the following data;
 ### Figures
 Scripts to perform the analyses in figures 2 and 4 (and some supplementary data) are presented in their own folders.
 
+### Resources
+*
+*
+
 ## Methods
 ### RNA extraction 
 Two separate RNA sequencing experiments were performed in this study. In the first experiment, tissue was microdissected from the subventricular zone of the lateral ventricle and the dentate gyrus of the same animal following the protocol of Walker et al. (2014). RNA was extracted using the RNeasy micro kit (Qiagen). In the second experiment, Nes-GFP positive cells from the DG were gated into ROS classes, based on their intracellular ROS content. 400 GFP positive cells from each ROS class were FACsorted into a PCR tube containing 8.5 μl of a hypotonic reaction buffer and RNA was prepared using the SMARTer Ultra Low RNA HV Kit (Takara Bio) according to the manufacturer’s protocol. For both experiments, cDNA of polyadenylated mRNA was synthesized from RNA of the lysed cells using SmartScribe reverse transcriptase, a universally tailed poly-dT primer and a template switching oligonucleotide (Takara Bio). This was followed by 12 cycles of amplification of the purified cDNA with the Advantage 2 DNA Polymerase. After ultrasonic shearing of the amplified cDNA (Covaris S2), samples were subjected to standard Illumina fragment library preparation using the NEBnext Ultra DNA library preparation chemistry (New England Biolabs). In brief, cDNA fragments were end-repaired, A-tailed and ligated to indexed Illumina Truseq adapters. Resulting libraries were PCR-amplified for 15 cycles using universal primers, purified using XP beads (Beckman Coulter) and then quantified with the Fragment Analyzer. Final libraries were equimolarly pooled and subjected to 75-bp-single-end sequencing on the Illumina HiSeq2500 platform, providing ~35 (24–60) million reads per sample. Reads were mapped to the latest mouse genome build (mm10) using the STAR algorithm (Dobin et al., 2013) and counts per ENSEMBL gene model prepared using the RSubread package {Liao:2013fo} for R/BioConductor.
