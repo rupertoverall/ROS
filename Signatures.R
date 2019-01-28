@@ -1,4 +1,4 @@
-source('http://research.rupertoverall.net/include.R')
+source('Extras.R')
 
 require(edgeR)
 require(XLConnect)

@@ -1,30 +1,25 @@
-source('http://research.rupertoverall.net/include.R')
-setwd('~/Dropbox/Projects/ROS/Paper Analysis/ROS Figures/')
+source('Extras.R')
 
 print(load("../SVZ.RData")) # "svz"
-print(load("../ROS.RData")) # "ros"
+print(load("Data/ROS.RData")) # "ros"
 
-# Annette's colours
-hiROS = "#FF6633"
-midROS = "#FF9933"
-loROS = "#CCCC33"
+# Additional plot colours
 green = "#5E9B3A"
 blue = "#3346A8"
 red = "#A70B02"
-annette.group.colours = c("+++" = hiROS, "++" = midROS, "+" = loROS)
 
 ## PCA plot
 pca = PCA(t(ros$cpm))
 var.explained = round((pca$sdev)^2 / sum(pca$sdev^2) * 100)
-colour.factor = sapply(ros$Group, function(name) annette.group.colours[name] )
-pdf(file="Figure_4_Results/ROS QCPrincipalComponentPlots.pdf", width=5, height=5)
+colour.factor = sapply(ros$Group, function(name) ros$group.colours[name] )
+pdf(file="Figure_4/ROS QCPrincipalComponentPlots.pdf", width=5, height=5)
 plot(pca$PC1, pca$PC2, pch=20, cex=1.5, xlim=c(-130, 130), ylim=c(-130, 130), col=colour.factor, xlab=paste0("PC1 (", var.explained[1], " %)"), ylab=paste0("PC2 (", var.explained[2], " %)"))
-legend("topright", c("hiROS", "midROS", "loROS"), col=annette.group.colours, ncol=1, pch=19, lty=0, text.col="black")
+legend("topright", c("hiROS", "midROS", "loROS"), col=ros$group.colours, ncol=1, pch=19, lty=0, text.col="black")
 title(main="Principal component clustering of samples")
 dev.off()
 
 ## Venn diagramme
-pdf(file="Figure_4_Results/ROS Venn.pdf", width=mm2in(85), height=mm2in(85))
+pdf(file="Figure_4/ROS Venn.pdf", width=mm2in(85), height=mm2in(85))
 plot(0, type="n", bty="n", axes=F, xlab="", ylab="") # (Clear plot for stupid Venn code)
 # Enriched overlap
 VennDiagram::draw.triple.venn(
@@ -35,7 +30,7 @@ VennDiagram::draw.triple.venn(
   n23=length(intersect(ros$enriched$`++`, ros$enriched$`+`)), 
   n13=length(intersect(ros$enriched$`+++`, ros$enriched$`+`)), 
   n123=length(intersect(ros$enriched$`+++`, intersect(ros$enriched$`++`, ros$enriched$`+`))), 
-  category=names(ros$enriched), cex=0.7, cat.cex=0.7, cat.fontfamily=rep("sans", 3), fontfamily="sans", lty="blank", fill=annette.group.colours)
+  category=names(ros$enriched), cex=0.7, cat.cex=0.7, cat.fontfamily=rep("sans", 3), fontfamily="sans", lty="blank", fill=ros$group.colours)
 dev.off()
 
 venn.numbers = function(){
@@ -46,7 +41,6 @@ venn.numbers = function(){
 	lo.mid=length(intersect(ros$enriched$`++`, ros$enriched$`+`))
 	hi.lo=length(intersect(ros$enriched$`+++`, ros$enriched$`+`))
 	hi.mid.lo=length(intersect(ros$enriched$`+++`, intersect(ros$enriched$`++`, ros$enriched$`+`)))
-	
 	return(t(t(c(
 		hi.only = hi - (hi.mid + hi.lo + hi.mid.lo), 
 		mid.only = mid - (hi.mid + lo.mid + hi.mid.lo),
@@ -60,35 +54,35 @@ venn.numbers = function(){
 venn.numbers()
 
 ## Functional annotation (run once)
-#$ source('http://research.rupertoverall.net/Signatures.R')
-#$ write.results.to.excel(ros$signatures, file="Figure_4_Results/SignatureEnrichment.xlsx")
+#$ source('Signatures.R')
+#$ write.results.to.excel(ros$signatures, file="Figure_4/SignatureEnrichment.xlsx")
 
 ## Transcript overlap
-pdf("Figure_4_Results/SVZ overlaps.pdf", width=mm2in(85), height=mm2in(85))
+pdf("Figure_4/SVZ overlaps.pdf", width=mm2in(85), height=mm2in(85))
 par(mfrow=c(1, 1), cex=0.5)
 intersections.ros = vcor(ros$signatures, svz$signatures, normalise=F)
 intersections.ros = intersections.ros / unlist(lapply(ros$signatures, length)) # Normalised to SVZ region totals
-barplot(intersections.ros, col=annette.group.colours, beside=TRUE, main="Overlap of genes of each ROS class in hippocampus regions")
+barplot(intersections.ros, col=ros$group.colours, beside=TRUE, main="Overlap of genes of each ROS class in hippocampus regions")
 dev.off()
 
 ## Cellular process markers
 # Hand-curated lists
 curated.markers = list(
-	cell.cycle.markers = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="cell_cycle_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ng.markers = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="NG_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	cell.cycle = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ng.trajectory = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="NG_trajectory"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ros.markers = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="ROS_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	other.cell.cycle = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="other_cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	forkhead = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="forkhead"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	tf.genes.q = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinQ"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	tf.genes.a = unique(data.frame(readxl::read_excel('../../Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinA"), stringsAsFactors=F)[, "Ensembl.ID"])
+	cell.cycle.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="cell_cycle_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ng.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="NG_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	cell.cycle = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ng.trajectory = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="NG_trajectory"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ros.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="ROS_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	other.cell.cycle = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="other_cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	forkhead = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="forkhead"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	tf.genes.q = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinQ"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	tf.genes.a = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinA"), stringsAsFactors=F)[, "Ensembl.ID"])
 )
 curated.markers.names = c(cell.cycle.markers="Cell cycle markers", ng.markers="Neurogenesis markers", cell.cycle="Cell cycle genes", ng.trajectory="Neurogenic trajectory", ros.markers="ROS_markers", other.cell.cycle="Other cell cycle genes", forkhead="Forkhead family", tf.genes.q="TFs_waterfall_upinQ", tf.genes.a="TFs_waterfall_upinA")
 curated.markers.pc1 = lapply(names(curated.markers), function(name) PCA(t(ros$cpm[intersect(rownames(ros$cpm), curated.markers[[name]]), ]))$PC1 )
 names(curated.markers.pc1) = names(curated.markers)
 #
-pdf("Figure_4_Results/Curated_lists.pdf", width=mm2in(85), height=mm2in(85))
+pdf("Figure_4/Curated_lists.pdf", width=mm2in(85), height=mm2in(85))
 select.markers = curated.markers[c("ros.markers", "cell.cycle.markers", "ng.markers")]
 select.markers.pc1 = curated.markers.pc1[names(select.markers)]
 plot(1:length(levels(ros$Group)), type="n", ylim=range(do.call("rbind", select.markers.pc1)), ylab = "arb. unit")
@@ -97,7 +91,7 @@ for(name in names(select.markers)) lines(by(select.markers.pc1[[name]], ros$Grou
 dev.off()
 
 ## Transcription factors from Shin et al.
-pdf("Figure_4_Results/TF_lists.pdf", width=mm2in(85), height=mm2in(85))
+pdf("Figure_4/TF_lists.pdf", width=mm2in(85), height=mm2in(85))
 tf.markers = curated.markers[grep("tf\\.genes", names(curated.markers))]
 tf.markers.pc1 = curated.markers.pc1[names(tf.markers)]
 plot(1:length(levels(ros$Group)), type="n", ylim=range(do.call("rbind", tf.markers.pc1)), ylab = "arb. unit")
@@ -122,13 +116,13 @@ ros.pc1 = lapply(levels(ros$Group), function(group){
 })
 names(ros.pc1) = levels(ros$Group)
 #
-pdf(paste0("Figure_4_Results/Pseudotime.pdf"), width=mm2in(85), height=mm2in(85))
+pdf(paste0("Figure_4/Pseudotime.pdf"), width=mm2in(85), height=mm2in(85))
 plot(NA, xlim=c(0, 1), ylim=c(-8, 8), type="n", main="Expression in Shin et al.", ylab="PC1 expression\n(smooth spline interpolation)", xlab="pseudotime")
 for(group in levels(ros$Group)){
 	smooth = smooth.spline(shin$pseudotime$x, ros.pc1[[group]], spar=0.7)
-	lines(smooth, col=annette.group.colours[[group]], lwd=2)
+	lines(smooth, col=ros$group.colours[[group]], lwd=2)
 }
 dev.off()
 
-writeLines(capture.output(sessionInfo()), "Figure_4_Results/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "Figure_4/sessionInfo.txt")
 ##########

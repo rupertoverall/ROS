@@ -1,0 +1,27 @@
+R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS  10.14.2
+
+Matrix products: default
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.0           pillar_1.3.0         compiler_3.5.1       cellranger_1.1.0    
+ [5] formatR_1.5          futile.logger_1.4.3  bindr_0.1.1          futile.options_1.0.1
+ [9] tools_3.5.1          digest_0.6.18        bit_1.1-14           memoise_1.1.0       
+[13] RSQLite_2.1.1        tibble_1.4.2         pkgconfig_2.0.2      rlang_0.3.0.1       
+[17] DBI_1.0.0            GEOquery_2.50.5      rstudioapi_0.8       curl_3.2            
+[21] yaml_2.2.0           parallel_3.5.1       VennDiagram_1.6.20   bindrcpp_0.2.2      
+[25] dplyr_0.7.8          xml2_1.2.0           IRanges_2.16.0       S4Vectors_0.20.1    
+[29] hms_0.4.2            bit64_0.9-7          stats4_3.5.1         grid_3.5.1          
+[33] tidyselect_0.2.5     glue_1.3.0           Biobase_2.42.0       R6_2.3.0            
+[37] AnnotationDbi_1.44.0 readxl_1.1.0         limma_3.38.2         blob_1.1.1          
+[41] tidyr_0.8.2          readr_1.3.1          purrr_0.2.5          lambda.r_1.2.3      
+[45] magrittr_1.5         BiocGenerics_0.28.0  assertthat_0.2.0     crayon_1.3.4        

@@ -1,0 +1,65 @@
+Marker	Group	GroupName	SpecificGroupName
+Apbb1	E	Anti-apoptotic	Anti-apoptotic
+Casp3	E	Anti-apoptotic	Anti-apoptotic
+Trp53	E	Anti-apoptotic	Anti-apoptotic
+Aldoc	CC	Anti-mitotic	Cell cycle entry (negative)
+Cdkn1a	CC	Anti-mitotic	Cell cycle inhibitor
+Hes1	CC	Anti-mitotic	Cell cycle entry (negative)
+Pten	CC	Anti-mitotic	Cell cycle inhibitor
+Rest	CC	Anti-mitotic	Cell cycle entry (negative)
+Slc1a3	I	Astrocytic	Pro-astrocytic
+Jag1	C	Cellular sensors of the microenvironment	Cellular sensors of the microenvironment
+Notch1	C	Cellular sensors of the microenvironment	Cellular sensors of the microenvironment
+Notch4	C	Cellular sensors of the microenvironment	Cellular sensors of the microenvironment
+Sirt1	C	Cellular sensors of the microenvironment	Cellular sensors of the microenvironment
+Cpt1a	G	Fatty acid oxidation	Fatty acid oxidation
+Thrsp	G	Fatty acid oxidation	Fatty acid oxidation
+Ascl1	H	Neuronal	_Pro-neural
+Calb2	H	Neuronal	Neuron
+Fabp7	H	Neuronal	_Pro-neural
+Gad1	H	Neuronal	Neuron
+Hes5	H	Neuronal	_Pro-neural
+Neurod1	H	Neuronal	Neuron
+Pax6	H	Neuronal	_Pro-neural
+Prox1	H	Neuronal	Neuron
+Rbfox2	H	Neuronal	Neuron
+Rbfox3	H	Neuronal	Neuron
+Aurka	D	Proliferation	Mitosis 
+Bub1	D	Proliferation	Mitosis 
+Ccna2	D	Proliferation	G1/S transition
+Ccnb1	D	Proliferation	G1/S transition
+Ccnb2	D	Proliferation	G1/S transition
+Ccnd1	D	Proliferation	Proliferation
+Ccnd2	D	Proliferation	G1/S transition
+Ccnd3	D	Proliferation	G1/S transition
+Ccne1	D	Proliferation	G1/S transition
+Cdk2	D	Proliferation	G1/S transition
+Cdk4	D	Proliferation	Proliferating
+Dcx	D	Proliferation	Proliferating
+Eomes	D	Proliferation	Proliferating
+Fasn	D	Proliferation	Proliferating
+Foxo1	D	Proliferation	Cell cycle entry (positive)
+Gli1	D	Proliferation	Cell cycle entry (positive)
+Id4	D	Proliferation	Proliferation
+Mcm2	D	Proliferation	Proliferation
+Mcm3	D	Proliferation	Proliferation
+Mcm4	D	Proliferation	Proliferation
+Mcm6	D	Proliferation	Proliferation
+Mki67	D	Proliferation	Proliferation
+Ncam1	D	Proliferation	Proliferating
+Pcna	D	Proliferation	Proliferation
+Runx1	D	Proliferation	Cell cycle entry (positive)
+Sox2	D	Proliferation	Proliferation
+Stmn1	D	Proliferation	Proliferating
+Yap1	D	Proliferation	Cell cycle entry (positive)
+Btg1	A	Quiescent stem cell	Quiescent stem cell
+Btg2	A	Quiescent stem cell	Quiescent stem cell
+Ddx5	A	Quiescent stem cell	Quiescent stem cell
+Hopx	A	Quiescent stem cell	Quiescent stem cell
+Id1	A	Quiescent stem cell	Quiescent stem cell
+Id3	A	Quiescent stem cell	Quiescent stem cell
+Klf4	A	Quiescent stem cell	Quiescent stem cell
+Gfap	B	Stem cell	General stem cell
+Lpar1	B	Stem cell	General stem cell
+Nes	B	Stem cell	_General stem cell
+Notch2	B	Stem cell	General stem cell

@@ -1,12 +1,11 @@
-source('http://research.rupertoverall.net/include.R')
-setwd('~/Dropbox/Projects/ROS/Paper Analysis/')
-
 # This script creates the canonical data files (used for analysis and GEO submission)
 # The RData archives contain output from the 'calculate.signatures' workflow.
 source('http://research.rupertoverall.net/Signatures.R') # All diferential analysis now done by 'calculate.signatures'
 
 ##
 # SVZ
+
+gse = GEOquery::getGEO("GSE124095")
 raw.counts = read.tab('~/genreg_ruperto/Sequencing_Data/SVZ/BAM/GeneCounts.tab', row.names=1)
 n.counts.raw = dim(raw.counts)
 raw.headers = read.tab('../Additional Data/SVZ_headers.tab', stringsAsFactors=F, row.names=1)
