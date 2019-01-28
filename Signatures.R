@@ -1,10 +1,5 @@
 source('Extras.R')
 
-require(edgeR)
-require(XLConnect)
-require(topGO)
-require(ReactomePA)
-
 calculate.signatures = function(counts, groups, p=0.05, top=NA, filter=NA){
   # Counts must be raw reads
   counts = as.matrix(counts)
@@ -16,16 +11,16 @@ calculate.signatures = function(counts, groups, p=0.05, top=NA, filter=NA){
     present = cpm.presence.filter(counts, groups, nGroupsToPass=1, fractionSamplesPerGroupToPass=0.75, threshold=1)
     counts = counts[present, ]
   }
-  cpm = cpm(counts, prior.count=1, log=T)
+  cpm = edgeR::cpm(counts, prior.count=1, log=T)
   
   # Filter to select genes that are regulated at all
   design = model.matrix(~groups)
-  fit = glmFit(estimateDisp(calcNormFactors(DGEList(counts=counts, group=groups)), design), design)
+  fit = edgeR::glmFit(estimateDisp(calcNormFactors(edgeR::DGEList(counts=counts, group=groups)), design), design)
   top.tags = NULL
   if(!is.na(top)){
-  	top.tags = topTags(glmLRT(fit, coef=2:length(levels(groups))), n=top, p.value=1)$table
+  	top.tags = edgeR::topTags(edgeR::glmLRT(fit, coef=2:length(levels(groups))), n=top, p.value=1)$table
   }else{
-  	top.tags = topTags(glmLRT(fit, coef=2:length(levels(groups))), n=nrow(counts), p.value=p)$table
+  	top.tags = edgeR::topTags(edgeR::glmLRT(fit, coef=2:length(levels(groups))), n=nrow(counts), p.value=p)$table
   }
   
   # Enriched if _significantly_ greater than mean
@@ -85,8 +80,8 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
   XLConnect::createSheet(workbook, group.names) #Create empty sheets (which will be overwritten) and...
   XLConnect::removeSheet(workbook, setdiff(XLConnect::getSheets(workbook), group.names)) # ...delete other existing sheets.
   db = NULL
-  if(species=="mouse") {require(org.Mm.eg.db); db = org.Mm.eg.db}
-  if(species=="human") {require(org.Hs.eg.db); db = org.Hs.eg.db}
+  if(species=="mouse") {db = org.Mm.eg.db::org.Mm.eg.db}
+  if(species=="human") {db = org.Hs.eg.db::org.Hs.eg.db}
   if(id=="ENSEMBL"){
     # Gene lists
     . = lapply(group.names, function(group){
@@ -100,6 +95,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
       XLConnect::setColumnWidth(workbook, group, 1:ncol(data), -1)
     })
     # GO
+    require(topGO) # This does not work unless namespace is loaded
     if(length(background)<2) background = keys(db, keytype="ENSEMBL")
     background.genes = select(db, keys=background, columns=c("SYMBOL", "ENTREZID"), "ENSEMBL")
     background.ENSEMBL = unique(background.genes$ENSEMBL[!is.na(background.genes$ENSEMBL)])
@@ -119,7 +115,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     reactome.results = sapply(group.names, function(group){
       query = select(db, keys=collapse.replicate.names(as.matrix(input[[group]])[, 1]), columns=c("ENTREZID"), "ENSEMBL")
       query = unique(query$ENTREZID[!is.na(query$ENTREZID)])
-      reactome.results = enrichPathway(query, universe=background.ENTREZID, organism="mouse", pvalueCutoff=0.05, pAdjustMethod = "BH")
+      reactome.results = ReactomePA::enrichPathway(query, universe=background.ENTREZID, organism="mouse", pvalueCutoff=0.05, pAdjustMethod = "BH")
     })
     names(reactome.results) = group.names
     . = lapply(group.names, function(group){
@@ -144,6 +140,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
       setColumnWidth(workbook, group, 1:ncol(data), -1)
     })
     # GO
+    require(topGO) # This does not work unless namespace is loaded
     if(length(background)<2) background = keys(db, keytype="ENTREZID")
     background.ENTREZID = unique(background[!is.na(background)])
     go.results = lapply(group.names, function(group){
@@ -161,7 +158,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     reactome.results = sapply(group.names, function(group){
       query = collapse.replicate.names(as.matrix(input[[group]])[, 1])
       query = unique(query[!is.na(query)])
-      reactome.results = enrichPathway(query, universe=background, organism="mouse", pvalueCutoff=0.05, pAdjustMethod = "BH")
+      reactome.results = ReactomePA::enrichPathway(query, universe=background, organism="mouse", pvalueCutoff=0.05, pAdjustMethod = "BH")
     })
     names(reactome.results) = group.names
     . = lapply(group.names, function(group){

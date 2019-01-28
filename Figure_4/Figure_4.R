@@ -1,6 +1,6 @@
 source('Extras.R')
 
-print(load("../SVZ.RData")) # "svz"
+print(load("Data/SVZ.RData")) # "svz"
 print(load("Data/ROS.RData")) # "ros"
 
 # Additional plot colours
@@ -99,18 +99,24 @@ tf.markers.colours = c(tf.genes.q=red, tf.genes.a=green)
 for(name in names(tf.markers)) lines(by(tf.markers.pc1[[name]], ros$Group, mean), col=tf.markers.colours[name], lwd=2, cex=.6)
 dev.off()
 
-## Expression in Shin et al.
-print(load("Resources/Shin.RData")) # Shin et al. with pseudotime correction
-# ROS clusters projected onto Shin
-shin.mapping = AnnotationDbi::select(org.Mm.eg.db::org.Mm.eg.db, keys=rownames(shin$pseudotime$expr), columns=c("ENSEMBL"), "SYMBOL")
-shin.mapping = shin.mapping[match(rownames(shin$pseudotime$expr), shin.mapping$SYMBOL), ]
+## Expression data from Shin et al. (pseudotime data downloaded directly from the Supplementary Data provided with the Cell paper)
+if(!file.exists("Resources/Shin.xlsx")) download.file('https://www.cell.com/cms/10.1016/j.stem.2015.07.013/attachment/e662afe8-70fe-4b31-87bc-d10b75ad0d95/mmc7.xlsx', "Resources/Shin.xlsx")
+shin.expression = data.frame(readxl::read_excel("Resources/Shin.xlsx", skip = 2), row.names = 1, stringsAsFactors=F)
+shin.pseudotime = shin.expression["Pseudotime", ] # This is the x-position in pseudotime
+shin.expression = shin.expression[-1, ] # Remaining rows are expression data
+shin.expression = shin.expression[rowSums(shin.expression) > 0, ] # Exclude those genes not expressed in any cell
+
+# Convert gene symbols to ENSEMBL IDs to match our ROS lists
+shin.mapping = AnnotationDbi::select(org.Mm.eg.db::org.Mm.eg.db, keys=rownames(shin.expression), columns=c("ENSEMBL"), "SYMBOL")
+shin.mapping = shin.mapping[match(rownames(shin.expression), shin.mapping$SYMBOL), ]
 shin.mapping = shin.mapping[!is.na(shin.mapping$ENSEMBL), ]
-shin.common = shin$pseudotime$expr[shin.mapping$SYMBOL, ]
-#
+shin.common = shin.expression[shin.mapping$SYMBOL, ]
+
+# ROS clusters projected onto Shin
 ros.pc1 = lapply(levels(ros$Group), function(group){
 	common = shin.mapping$ENSEMBL %in% ros$signatures[[group]]
-	data = t(shin$pseudotime$expr[common, ])
-	data = data[, which(colVars(data) > 0)]
+	data = t(shin.expression[common, ])
+	data = data[, which(colVars(data, na.rm = T) > 0)] # Invariant variables will crash prcomp
 	print(ncol(data))
 	PCA(data)$PC1
 })
@@ -119,7 +125,7 @@ names(ros.pc1) = levels(ros$Group)
 pdf(paste0("Figure_4/Pseudotime.pdf"), width=mm2in(85), height=mm2in(85))
 plot(NA, xlim=c(0, 1), ylim=c(-8, 8), type="n", main="Expression in Shin et al.", ylab="PC1 expression\n(smooth spline interpolation)", xlab="pseudotime")
 for(group in levels(ros$Group)){
-	smooth = smooth.spline(shin$pseudotime$x, ros.pc1[[group]], spar=0.7)
+	smooth = smooth.spline(shin.pseudotime, ros.pc1[[group]], spar=0.7)
 	lines(smooth, col=ros$group.colours[[group]], lwd=2)
 }
 dev.off()
