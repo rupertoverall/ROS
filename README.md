@@ -55,21 +55,3 @@ functional enrichment results
 * [org.Mm.eg.db](http://bioconductor.org/packages/release/data/annotation/html/org.Mm.eg.db.html) - Mouse gene annotation data
 * [AnnotationDbi](https://bioconductor.org/packages/release/bioc/html/AnnotationDbi.html) - Annotation tools
 * [VennDiagram](https://cran.r-project.org/web/packages/VennDiagram/index.html) - Venn diagrammes
-
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
