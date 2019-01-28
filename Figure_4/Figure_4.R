@@ -1,4 +1,4 @@
-source('Extras.R')
+source('Resources/Extras.R')
 
 print(load("Data/SVZ.RData")) # "svz"
 print(load("Data/ROS.RData")) # "ros"
@@ -123,12 +123,69 @@ ros.pc1 = lapply(levels(ros$Group), function(group){
 names(ros.pc1) = levels(ros$Group)
 #
 pdf(paste0("Figure_4/Pseudotime.pdf"), width=mm2in(85), height=mm2in(85))
-plot(NA, xlim=c(0, 1), ylim=c(-8, 8), type="n", main="Expression in Shin et al.", ylab="PC1 expression\n(smooth spline interpolation)", xlab="pseudotime")
+plot(NA, xlim=c(0, 1), ylim=c(-7, 7), type="n", main="Expression in Shin et al.", ylab="PC1 expression\n(smooth spline interpolation)", xlab="pseudotime")
 for(group in levels(ros$Group)){
 	smooth = smooth.spline(shin.pseudotime, ros.pc1[[group]], spar=0.7)
 	lines(smooth, col=ros$group.colours[[group]], lwd=2)
 }
 dev.off()
+
+## Heatmap of ROS drops
+# Get list of genes that were described in manuscript
+group.markers = utils::read.delim('Resources/ROSDropGroups.txt', stringsAsFactors = F)
+group.markers = group.markers[order(group.markers$Group, group.markers$SpecificGroupName), ]
+mapping = AnnotationDbi::select(org.Mm.eg.db::org.Mm.eg.db, keys=group.markers$Marker, columns=c("ENSEMBL"), "SYMBOL")
+rownames(mapping) = mapping$SYMBOL # Also ensures uniqueness
+mapping = mapping[group.markers$Marker, ] # Ensure correct ordering
+
+# ROS group enrichment
+plot.groups = c("+++", "++", "+")
+plot.data = sapply(plot.groups, function(group) mapping$ENSEMBL %in% ros$enriched[[group]] )
+
+# Re-run EdgeR comparing hi and lo to mid. 
+centerGroup = relevel(ros$Group, "++") # Intercept is midROS
+design = model.matrix(~centerGroup)
+fit = edgeR::glmFit(edgeR::estimateDisp(edgeR::calcNormFactors(edgeR::DGEList(counts=ros$counts, group=centerGroup)), design), design)
+drop.1 = edgeR::topTags(edgeR::glmLRT(fit, coef=2), n=nrow(ros$counts), p.value=1)$table
+drop.2 = edgeR::topTags(edgeR::glmLRT(fit, coef=3), n=nrow(ros$counts), p.value=1)$table
+
+# Filtered by significance
+significance.data = data.frame("drop1" = drop.1[mapping$ENSEMBL, "FDR"] < 0.05, "drop2" = drop.2[mapping$ENSEMBL, "FDR"] < 0.05)
+fc.data = data.frame("drop1" = -drop.1[mapping$ENSEMBL, "logFC"], "drop2" = drop.2[mapping$ENSEMBL, "logFC"]) # Signs of drop1 reversed due to level ordering
+for(i in 1:ncol(fc.data)) fc.data[!significance.data[, i], i] = NA
+rownames(fc.data) = mapping$ENSEMBL
+
+# Balance plot data
+extreme.value = ceiling(max(abs(range(fc.data, na.rm = T))))
+plot.data = (fc.data / extreme.value + 1) / 2
+
+png("Figure_4/ROSDrops.png", width = 85, height = (nrow(plot.data) * 3 + 15), units = "mm", res = 600)
+plot.heatmap.raster(
+	plot.data, 
+	x.groups=colnames(plot.data), 
+	y.groups=group.markers$Group,
+	x.group.colours=colourise.factor(group.markers$Group, scheme = "annette"),
+	x.labels=colnames(plot.data), 
+	y.labels=group.markers$Marker,
+	title="Changes in expression at each 'ROS drop'",
+	title.cex=0.7,
+	title.height=0,
+	title.adjust=0,
+	x.label.height=1, 
+	y.label.width=2, 
+	x.label.cex=0.7, 
+	y.label.cex=0.4, 
+	x.label.adjust=-2,
+	y.label.adjust=-1.1,
+	colour.palette=colour.schemes$bluetored.dark.3,
+	absolute=T
+)
+dev.off()
+
+png(file="Figure_4/ROSDrops_ColourScale.png", width=85, height=13, units="mm", res=600)
+colour.scale.legend(range = seq(-extreme.value, extreme.value, by = .5), colour.schemes$bluetored.dark.3, cex.axis = 0.5)
+dev.off()
+
 
 writeLines(capture.output(sessionInfo()), "Figure_4/sessionInfo.txt")
 ##########
