@@ -68,15 +68,15 @@ dev.off()
 ## Cellular process markers
 # Hand-curated lists
 curated.markers = list(
-	cell.cycle.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="cell_cycle_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ng.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="NG_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	cell.cycle = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ng.trajectory = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="NG_trajectory"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	ros.markers = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="ROS_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	other.cell.cycle = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="other_cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	forkhead = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="forkhead"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	tf.genes.q = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinQ"), stringsAsFactors=F)[, "Ensembl.ID"]),
-	tf.genes.a = unique(data.frame(readxl::read_excel('Additional Data/Gene_lists.xlsx', sheet="TFs_waterfall_upinA"), stringsAsFactors=F)[, "Ensembl.ID"])
+	cell.cycle.markers = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="cell_cycle_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ng.markers = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="NG_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	cell.cycle = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ng.trajectory = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="NG_trajectory"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	ros.markers = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="ROS_markers"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	other.cell.cycle = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="other_cell_cycle"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	forkhead = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="forkhead"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	tf.genes.q = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="TFs_waterfall_upinQ"), stringsAsFactors=F)[, "Ensembl.ID"]),
+	tf.genes.a = unique(data.frame(readxl::read_excel('Resources/Gene_lists.xlsx', sheet="TFs_waterfall_upinA"), stringsAsFactors=F)[, "Ensembl.ID"])
 )
 curated.markers.names = c(cell.cycle.markers="Cell cycle markers", ng.markers="Neurogenesis markers", cell.cycle="Cell cycle genes", ng.trajectory="Neurogenic trajectory", ros.markers="ROS_markers", other.cell.cycle="Other cell cycle genes", forkhead="Forkhead family", tf.genes.q="TFs_waterfall_upinQ", tf.genes.a="TFs_waterfall_upinA")
 curated.markers.pc1 = lapply(names(curated.markers), function(name) PCA(t(ros$cpm[intersect(rownames(ros$cpm), curated.markers[[name]]), ]))$PC1 )
@@ -100,7 +100,7 @@ for(name in names(tf.markers)) lines(by(tf.markers.pc1[[name]], ros$Group, mean)
 dev.off()
 
 ## Expression in Shin et al.
-print(load("~/Dropbox/Work/Resources/Shin_Waterfall/Shin.RData")) # Shin et al. with pseudotime correction
+print(load("Resources/Shin.RData")) # Shin et al. with pseudotime correction
 # ROS clusters projected onto Shin
 shin.mapping = AnnotationDbi::select(org.Mm.eg.db::org.Mm.eg.db, keys=rownames(shin$pseudotime$expr), columns=c("ENSEMBL"), "SYMBOL")
 shin.mapping = shin.mapping[match(rownames(shin$pseudotime$expr), shin.mapping$SYMBOL), ]
