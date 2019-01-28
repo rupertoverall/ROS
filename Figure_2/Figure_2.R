@@ -26,8 +26,8 @@ VennDiagram::draw.pairwise.venn(
 dev.off()
 
 ## Functional annotation (this takes a while to run)
-#@ source('Signatures.R')
-#@ write.results.to.excel(svz$signatures, file="Figure_2/SignatureEnrichment.xlsx", background=rownames(svz$counts))
+source('Signatures.R')
+write.results.to.excel(svz$signatures, file="Figure_2/SignatureEnrichment.xlsx", background=rownames(svz$counts))
 
 # GO bar graphs
 pdf(paste0("Figure_2/GO bar graphs.pdf"), width=12, height=5)

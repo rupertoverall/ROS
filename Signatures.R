@@ -87,7 +87,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     . = lapply(group.names, function(group){
       XLConnect::createSheet(workbook, group)
       XLConnect::clearSheet(workbook, group)
-      data = select(db, keys=as.matrix(input[[group]])[, 1], columns=c("SYMBOL", "ENTREZID"), "ENSEMBL")
+      data = AnnotationDbi::select(db, keys=as.matrix(input[[group]])[, 1], columns=c("SYMBOL", "ENTREZID"), "ENSEMBL")
       meta = as.data.frame(input[[group]])
       colnames(meta) = colnames(input[[group]])
       data = merge(data, meta, by=1)
@@ -97,7 +97,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     # GO
     require(topGO) # This does not work unless namespace is loaded
     if(length(background)<2) background = keys(db, keytype="ENSEMBL")
-    background.genes = select(db, keys=background, columns=c("SYMBOL", "ENTREZID"), "ENSEMBL")
+    background.genes = AnnotationDbi::select(db, keys=background, columns=c("SYMBOL", "ENTREZID"), "ENSEMBL")
     background.ENSEMBL = unique(background.genes$ENSEMBL[!is.na(background.genes$ENSEMBL)])
     go.results = lapply(group.names, function(group){
       go = GOForIt(background.ENSEMBL, collapse.replicate.names(as.matrix(input[[group]])[, 1]), id.type='ensembl', species=species)
@@ -113,7 +113,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     # Reactome
     background.ENTREZID = unique(background.genes$ENTREZID[!is.na(background.genes$ENTREZID)])
     reactome.results = sapply(group.names, function(group){
-      query = select(db, keys=collapse.replicate.names(as.matrix(input[[group]])[, 1]), columns=c("ENTREZID"), "ENSEMBL")
+      query = AnnotationDbi::select(db, keys=collapse.replicate.names(as.matrix(input[[group]])[, 1]), columns=c("ENTREZID"), "ENSEMBL")
       query = unique(query$ENTREZID[!is.na(query$ENTREZID)])
       reactome.results = ReactomePA::enrichPathway(query, universe=background.ENTREZID, organism="mouse", pvalueCutoff=0.05, pAdjustMethod = "BH")
     })
@@ -132,7 +132,7 @@ write.results.to.excel = function(input, file, id="ENSEMBL", background=NA, spec
     . = lapply(group.names, function(group){
       createSheet(workbook, group)
       clearSheet(workbook, group)
-      data = select(db, keys=as.matrix(input[[group]])[, 1], columns=c("SYMBOL", "ENSEMBL"), "ENTREZID")
+      data = AnnotationDbi::select(db, keys=as.matrix(input[[group]])[, 1], columns=c("SYMBOL", "ENSEMBL"), "ENTREZID")
       meta = as.data.frame(input[[group]])
       colnames(meta) = colnames(input[[group]])
       data = merge(data, meta, by=1)
