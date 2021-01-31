@@ -1,6 +1,6 @@
 # ROS
 
-Code used for the next-generation RNA sequencing analysis accompanying the manuscript "**Cellular redox status defines functional states of adult hippocampal stem cells**".
+Code used for the next-generation RNA sequencing analysis accompanying the manuscript [**ROS Dynamics Delineate Functional States of Hippocampal Neural Stem Cells and Link to Their Activity-Dependent Exit from Quiescence**](https://doi.org/10.1016/j.stem.2020.10.019).
 Two experiments are described; 
 * A comparison of the two neurogenic niches of the adult mouse hippocampus.
 * Characterisation of the Nestin-positive neural precursor cells sorted on the basis of ROS (reactive oxygen species) content.
