@@ -54,7 +54,7 @@ venn.numbers = function(){
 venn.numbers()
 
 ## Functional annotation (this takes a while to run)
-source('Signatures.R')
+source('Resources/Signatures.R')
 write.results.to.excel(ros$signatures, file="Figure_4/SignatureEnrichment.xlsx")
 
 ## Transcript overlap
